@@ -1,4 +1,11 @@
 import os
+import re
+import string
+
+
+CHARACTERS_SET = string.ascii_letters + string.digits
+PATTERN = f'[{re.escape(CHARACTERS_SET)}]'
+LEN = 16
 
 
 class Config(object):

@@ -12,7 +12,7 @@ class URLForm(FlaskForm):
         'Введите ссылку ',
         validators=[DataRequired(message='Обязательное поле'),
                     Length(1, 128),
-                    URL(message='Проверьте корректность введёной ссылки')]
+                    URL(require_tld=True, message='Проверьте корректность введёной ссылки')]
     )
     custom_id = StringField(
         'Введите Вашу короткую ссылку',
@@ -22,5 +22,6 @@ class URLForm(FlaskForm):
     submit = SubmitField('Создать')
 
     def validate_custom_id(self, field):
-        if URLMap.query.filter_by(short=field.data).first():
+        if field.data and URLMap.get_url_map(field.data):
             raise ValidationError(f'Имя {field.data} уже занято!')
+        return field.data
