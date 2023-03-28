@@ -1,1 +1,1 @@
-REGULAR_EXPRESSION = '^[a-zA-Z0-9_]*$'
+REGULAR_EXPRESSION = '^[a-zA-Z0-9]*$'
