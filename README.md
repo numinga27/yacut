@@ -40,3 +40,4 @@ pip install -r requirements.txt
 ```
 flask run
 ```
+# Автор: Крылов Андрей тг @numinga92
