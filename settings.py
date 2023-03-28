@@ -3,9 +3,12 @@ import re
 import string
 
 
-CHARACTERS_SET = string.ascii_letters + string.digits
-PATTERN = f'[{re.escape(CHARACTERS_SET)}]'
+CREATE_SET = string.ascii_letters + string.digits
+CUSTOM_ID_LEN = 6
+PATTERN = f'[{re.escape(CREATE_SET)}]'
 LEN = 16
+ORIGINAL_LEN = 2048
+ITERATIONS_COUNT = 100
 
 
 class Config(object):

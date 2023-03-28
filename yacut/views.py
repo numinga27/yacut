@@ -1,13 +1,8 @@
-import random
-import string
-
-from flask import flash, redirect, render_template, url_for
+from flask import redirect, render_template
 
 from .forms import URLForm
 from .models import URLMap
 from . import app
-
-NAME_NOT_FREE = 'Имя "{}" уже занято!'
 
 
 @app.route('/', methods=['GET', 'POST'])
