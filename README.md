@@ -49,9 +49,13 @@ python3 -m pip install --upgrade pip
 ```
 pip install -r requirements.txt
 ```
+Выполнить миграции:
+```
+flask db upgrade
+```
 Запуск проекта:
 
 ```
 flask run
 ```
-## Автор: Крылов Андрей тг @numinga92
+## Автор: Крылов Андрей тг  [http://telegram.com/@numinga92]
