@@ -5,11 +5,11 @@ from datetime import datetime
 from flask import url_for
 from re import fullmatch
 
-from . import db
-from .error_handlers import InvalidAPIUsage
 from settings import (CHARACTERS_SET, CUSTOM_ID_LEN,
                       ITERATIONS_COUNT,
                       ORIGINAL_LEN, SHORT_LEN, PATTERN)
+
+from . import db
 
 
 ID_NOT_FOUND = 'Указанный id не найден'
