@@ -62,35 +62,6 @@ class URLMap(db.Model):
     def get_url_map(short_id):
         return URLMap.query.filter_by(short=short_id).first()
 
-    # @staticmethod
-    # def create(original, short_id=None, validate=False):
-    #     if not validate and short_id is None:
-    #         url_map = URLMap(original=original, short=short_id)
-    #     if validate:
-    #         original_len_now = len(original)
-    #         if original_len_now > ORIGINAL_LEN:
-    #             raise ValueError(
-    #                 ERROR_LEN_ORIGINAL.format(
-    #                     ORIGINAL_LEN,
-    #                     original_len_now
-    #                 )
-    #             )
-    #         if not validators.url(original):
-    #             raise ValueError(URL_ERROR)
-    #         if short_id in [None, ""]:
-    #             try:
-    #                 short_id = URLMap.get_unique_short_id()
-    #             except ShortIdGenerationError as error:
-    #                 flash(str(error))
-    #         if URLMap.get_url_map(short_id):
-    #             raise ValueError(NAME_NOT_FREE.format(short_id))
-    #         elif not fullmatch(REGULAR_EXPRESSION_SHORT_ID, short_id):
-    #             raise ValueError(ERROR_SHORT_LINK)
-    #     url_map = URLMap(original=original, short=short_id)
-    #     db.session.add(url_map)
-    #     db.session.commit()
-    #     return url_map
-
     @staticmethod
     def create(original, short_id=None):
         if short_id in [None, ""]:
