@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField, URLField
 from wtforms.validators import (DataRequired, Length,
                                 Optional, Regexp, ValidationError, URL)
 
-from settings import ORIGINAL_LEN, PATTERN, SHORT_LEN
+from settings import ORIGINAL_LEN, REGULAR_EXPRESSION, SHORT_LEN
 
 from .models import URLMap
 
@@ -27,11 +27,11 @@ class URLForm(FlaskForm):
     custom_id = StringField(
         OWN_LINK,
         validators=[Length(max=SHORT_LEN), Optional(),
-                    Regexp(PATTERN, message=LIMIT)]
+                    Regexp(REGULAR_EXPRESSION, message=LIMIT)]
     )
     submit = SubmitField(CREAT)
 
     def validate_custom_id(self, field):
-        if field.data and URLMap.get_url_map(field.data):
+        if field and URLMap.get_url_map(field.data):
             raise ValidationError(VALID_FIELD.format(field.data))
-        return field.data
+        return field

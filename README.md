@@ -58,4 +58,4 @@ flask db upgrade
 ```
 flask run
 ```
-## Автор: Крылов Андрей тг  [http://telegram.com/@numinga92]
+## Автор: [Крылов Андрей][http://telegram.com/@numinga92]

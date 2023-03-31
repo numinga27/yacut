@@ -13,20 +13,19 @@ def index_view():
     if not form.validate_on_submit():
         return render_template('index.html', form=form)
     if not form.custom_id.data:
+        short_id = form.custom_id.data
         try:
-            short_id = URLMap.get_unique_short_id()
+            URLMap.create(form.original_link.data, short_id)
         except ShortIdGenerationError as error:
             flash(str(error))
-    else:
-        short_id = form.custom_id.data
-        if URLMap.get_url_map(short_id) is not None:
-            flash(NAME_NOT_FREE.format(short_id),)
-            return render_template('index.html', form=form)
-    URLMap.create(form.original_link.data, short_id)
+        return render_template('index.html', form=form)
+    URLMap.create(form.original_link.data, form.custom_id.data)
     return render_template(
         'index.html',
         form=form,
-        url_map=url_for('redirect_view', short_id=short_id, _external=True)
+        url_map=url_for('redirect_view',
+                        short_id=form.custom_id.data,
+                        _external=True)
     )
 
 

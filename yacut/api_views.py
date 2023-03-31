@@ -8,10 +8,10 @@ from .models import URLMap, ID_NOT_FOUND, MISSING_REQUEST, URL_REQUIRED_FIELD
 
 @app.route('/api/id/<string:short_id>/', methods=['GET'])
 def get_url(short_id):
-    url = URLMap.get_url_map(short_id)
-    if not url:
+    url_map = URLMap.get_url_map(short_id)
+    if not url_map:
         raise InvalidAPIUsage(ID_NOT_FOUND, HTTPStatus.NOT_FOUND)
-    return jsonify({'url': url.original})
+    return jsonify({'url': url_map.original})
 
 
 @app.route('/api/id/', methods=['POST'])
@@ -22,7 +22,7 @@ def create():
     if 'url' not in data:
         raise InvalidAPIUsage(URL_REQUIRED_FIELD)
     try:
-        url = URLMap.create(data['url'], data.get('custom_id'), validate=True)
+        url_map = URLMap.create(data['url'], data.get('custom_id'))
     except ValueError as error:
         raise InvalidAPIUsage(str(error))
-    return jsonify(url.url_dict()), 201
+    return jsonify(url_map.url_dict()), 201

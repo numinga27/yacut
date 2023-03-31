@@ -3,13 +3,12 @@ import re
 import string
 
 
-CHARACTERS_SET = string.ascii_letters + string.digits
-PATTERN = f'[{re.escape(CHARACTERS_SET)}]'
+CREATED_SHORT_LINKS = string.ascii_letters + string.digits
+REGULAR_EXPRESSION = f'[{re.escape(CREATED_SHORT_LINKS)}]'
 CUSTOM_ID_LEN = 6
 SHORT_LEN = 16
 ORIGINAL_LEN = 2048
 ITERATIONS_COUNT = 100
-REGULAR_EXPRESSION = '^[a-zA-Z0-9]*$'
 
 
 class Config(object):
