@@ -3,10 +3,10 @@ import re
 import string
 
 
-CREATED_SHORT_LINKS = string.ascii_letters + string.digits
-REGULAR_EXPRESSION = f'[{re.escape(CREATED_SHORT_LINKS)}]'
-CUSTOM_ID_LEN = 6
-SHORT_LEN = 16
+GENERATE_STRING = string.ascii_letters + string.digits
+REGULAR_EXPRESSION = f'[{re.escape(GENERATE_STRING)}]'
+CUSTOM_ID_LEN_LIMIT = 6
+SHORT_ID_LEN_LIMIT = 16
 ORIGINAL_LEN = 2048
 ITERATIONS_COUNT = 100
 

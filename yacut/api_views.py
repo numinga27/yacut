@@ -22,7 +22,9 @@ def create():
     if 'url' not in data:
         raise InvalidAPIUsage(URL_REQUIRED_FIELD)
     try:
-        url_map = URLMap.create(data['url'], data.get('custom_id'))
+        url_map = URLMap.create(data['url'],
+                                data.get('custom_id'),
+                                validate=True)
     except ValueError as error:
         raise InvalidAPIUsage(str(error))
     return jsonify(url_map.url_dict()), 201
