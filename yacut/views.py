@@ -13,16 +13,19 @@ def index_view():
     if not form.validate_on_submit():
         return render_template('index.html', form=form)
     try:
-        create_dates = URLMap.create(form.original_link.data, form.custom_id.data)
+        take_url_map = URLMap.create(
+            form.original_link.data,
+            form.custom_id.data
+        )
+        return render_template(
+            'index.html',
+            form=form,
+            url_map=url_for('redirect_view',
+                            short_id=take_url_map.short,
+                            _external=True)
+        )
     except ShortIdGenerationError as error:
         flash(str(error))
-    return render_template(
-        'index.html',
-        form=form,
-        url_map=url_for('redirect_view',
-                        short_id=create_dates.short,
-                        _external=True)
-    )
 
 
 @ app.route('/<string:short_id>')

@@ -5,12 +5,13 @@ from datetime import datetime
 from flask import url_for
 from re import fullmatch
 
-from settings import (GENERATE_STRING, CUSTOM_ID_LEN_LIMIT,
-                      ITERATIONS_COUNT,
+from settings import (GENERATE_STRING_SHORT_ID, CUSTOM_ID_LEN_LIMIT,
+                      ITERATIONS_COUNT_SHORT_ID,
                       ORIGINAL_LEN, SHORT_ID_LEN_LIMIT,
-                      REGULAR_EXPRESSION)
+                      REGULAR_EXPRESSION_SHORT_ID)
 
 from . import db
+from .error_handlers import InvalidAPIUsage
 
 
 ID_NOT_FOUND = 'Указанный id не найден'
@@ -22,6 +23,8 @@ SHORT_ID_GENERATION_ERROR = 'Короткая ссылка не может бы�
 URL_ERROR = 'Указан недопустимый URL'
 ERROR_LEN_ORIGINAL = ('Ошибка. Длина исходной ссылки не может превышать {}'
                       'Текущая длина ссылки{}')
+TEST_LEN_SHORT_ID = (REGULAR_EXPRESSION_SHORT_ID +
+                     f'{{1,{SHORT_ID_LEN_LIMIT}}}')
 
 
 class ShortIdGenerationError(Exception):
@@ -52,9 +55,11 @@ class URLMap(db.Model):
 
     @staticmethod
     def get_unique_short_id():
-        for _ in range(ITERATIONS_COUNT):
-            short_id = ''.join(random.sample(GENERATE_STRING,
-                                             CUSTOM_ID_LEN_LIMIT))
+        for _ in range(ITERATIONS_COUNT_SHORT_ID):
+            short_id = ''.join(random.sample(
+                GENERATE_STRING_SHORT_ID,
+                CUSTOM_ID_LEN_LIMIT
+            ))
             if not URLMap.get_url_map(short_id):
                 return short_id
         raise ShortIdGenerationError(SHORT_ID_GENERATION_ERROR)
@@ -65,13 +70,9 @@ class URLMap(db.Model):
 
     @staticmethod
     def create(original, short_id=None, validate=False):
-        if not validate and short_id is None:
-            short_id = URLMap.get_unique_short_id()
-        if validate:
+        if validate or not validate:
             if short_id in [None, ""]:
                 short_id = URLMap.get_unique_short_id()
-            if URLMap.get_url_map(short_id):
-                raise ValueError(NAME_NOT_FREE.format(short_id))
             original_len_now = len(original)
             if original_len_now > ORIGINAL_LEN:
                 raise ValueError(
@@ -82,10 +83,14 @@ class URLMap(db.Model):
                 )
             if not validators.url(original):
                 raise ValueError(URL_ERROR)
-            elif not fullmatch(
-                    REGULAR_EXPRESSION + f'{{1,{SHORT_ID_LEN_LIMIT}}}',
+            if not fullmatch(
+                    TEST_LEN_SHORT_ID,
                     short_id):
                 raise ValueError(ERROR_SHORT_LINK)
+            if len(short_id) > SHORT_ID_LEN_LIMIT:
+                raise InvalidAPIUsage(ERROR_SHORT_LINK)
+            if URLMap.get_url_map(short_id):
+                raise ValueError(NAME_NOT_FREE.format(short_id))
         url_map = URLMap(original=original, short=short_id)
         db.session.add(url_map)
         db.session.commit()

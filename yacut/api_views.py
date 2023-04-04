@@ -3,7 +3,10 @@ from flask import jsonify, request
 
 from . import app
 from .error_handlers import InvalidAPIUsage
-from .models import URLMap, ID_NOT_FOUND, MISSING_REQUEST, URL_REQUIRED_FIELD
+from .models import (URLMap, ID_NOT_FOUND,
+                     MISSING_REQUEST, ShortIdGenerationError,
+                     SHORT_ID_GENERATION_ERROR,
+                     URL_REQUIRED_FIELD)
 
 
 @app.route('/api/id/<string:short_id>/', methods=['GET'])
@@ -27,4 +30,7 @@ def create():
                                 validate=True)
     except ValueError as error:
         raise InvalidAPIUsage(str(error))
+    except Exception:
+        raise ShortIdGenerationError(SHORT_ID_GENERATION_ERROR)
+
     return jsonify(url_map.url_dict()), 201
