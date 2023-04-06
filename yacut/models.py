@@ -8,7 +8,8 @@ from flask import url_for
 from settings import (
     GENERATE_STRING_SHORT_ID, CUSTOM_ID_LEN_LIMIT,
     ITERATIONS_COUNT_SHORT_ID,
-    ORIGINAL_LEN, SHORT_ID_LEN_LIMIT,
+    ORIGINAL_LEN, REGULAR_EXPRESSION_SHORT_ID,
+    SHORT_ID_LEN_LIMIT,
 )
 
 from . import db
@@ -23,7 +24,6 @@ SHORT_ID_GENERATION_ERROR = 'Короткая ссылка не может бы�
 URL_ERROR = 'Указан недопустимый URL'
 ERROR_LEN_ORIGINAL = ('Ошибка. Длина исходной ссылки не может превышать {}'
                       'Текущая длина ссылки{}')
-ALLOWED_CHARACTES = '^[a-zA-Z0-9]*$'
 
 
 class ShortIdGenerationError(Exception):
@@ -71,23 +71,24 @@ class URLMap(db.Model):
     def create(original, short_id=None, validate=False):
         if short_id in [None, ""]:
             short_id = URLMap.get_unique_short_id()
-        if not validate:
-            original_len_now = len(original)
-            if original_len_now > ORIGINAL_LEN:
-                raise ValueError(
-                    ERROR_LEN_ORIGINAL.format(
-                        ORIGINAL_LEN,
-                        original_len_now
+        else:
+            if validate:
+                original_len_now = len(original)
+                if original_len_now > ORIGINAL_LEN:
+                    raise ValueError(
+                        ERROR_LEN_ORIGINAL.format(
+                            ORIGINAL_LEN,
+                            original_len_now
+                        )
                     )
-                )
-            if not validators.url(original):
-                raise ValueError(URL_ERROR)
-        if len(short_id) > SHORT_ID_LEN_LIMIT:
-            raise ValueError(ERROR_SHORT_LINK)
-        if not re.fullmatch(ALLOWED_CHARACTES, short_id):
-            raise ValueError(ERROR_SHORT_LINK)
-        if URLMap.get_url_map(short_id):
-            raise ValueError(NAME_NOT_FREE.format(short_id))
+                if not validators.url(original):
+                    raise ValueError(URL_ERROR)
+            if len(short_id) > SHORT_ID_LEN_LIMIT:
+                raise ValueError(ERROR_SHORT_LINK)
+            if not re.fullmatch(REGULAR_EXPRESSION_SHORT_ID, short_id):
+                raise ValueError(ERROR_SHORT_LINK)
+            if URLMap.get_url_map(short_id):
+                raise ValueError(NAME_NOT_FREE.format(short_id))
         url_map = URLMap(original=original, short=short_id)
         db.session.add(url_map)
         db.session.commit()

@@ -5,7 +5,7 @@ from . import app
 from .error_handlers import InvalidAPIUsage
 from .models import (URLMap, ID_NOT_FOUND,
                      MISSING_REQUEST,
-                     SHORT_ID_GENERATION_ERROR,
+                     SHORT_ID_GENERATION_ERROR, ShortIdGenerationError,
                      URL_REQUIRED_FIELD)
 
 
@@ -30,7 +30,7 @@ def create():
                                 validate=True)
     except ValueError as error:
         raise InvalidAPIUsage(str(error))
-    except Exception:
+    except ShortIdGenerationError:
         raise InvalidAPIUsage(SHORT_ID_GENERATION_ERROR)
 
     return jsonify(url_map.url_dict()), 201
